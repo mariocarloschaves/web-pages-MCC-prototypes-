@@ -27,15 +27,59 @@ document.querySelectorAll('[data-film]').forEach(container => {
   });
 });
 const filters = document.querySelectorAll('[data-filter]');
-filters.forEach(button => button.addEventListener('click', () => {
-  filters.forEach(b => b.setAttribute('aria-pressed', String(b === button)));
+const search = document.querySelector('#menu-search');
+let category = 'all';
+const normalise = value => value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+function filterMenu() {
+  const query = normalise(search.value.trim());
   let count = 0;
   document.querySelectorAll('.dish').forEach(dish => {
-    dish.hidden = button.dataset.filter !== 'all' && button.dataset.filter !== dish.dataset.category;
-    if (!dish.hidden) count++;
+    const match = (category === 'all' || category === dish.dataset.category) && normalise(dish.innerText).includes(query);
+    dish.hidden = !match;
+    if (match) count++;
   });
-  document.querySelector('#filter-status').textContent = `${count} ${words('focaccias apresentadas','focaccias shown')}`;
+  const label = `${count} ${words('focaccias apresentadas','focaccias shown')}`;
+  document.querySelector('#filter-status').textContent = label;
+  document.querySelector('#menu-count').textContent = `${count} focaccias`;
+  document.querySelector('.menu-empty').hidden = count > 0;
+}
+filters.forEach(button => button.addEventListener('click', () => {
+  category = button.dataset.filter;
+  filters.forEach(b => b.setAttribute('aria-pressed', String(b === button)));
+  filterMenu();
 }));
+search.addEventListener('input', filterMenu);
+document.querySelector('#reset-menu').addEventListener('click', () => {
+  search.value = ''; category = 'all';
+  filters.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.filter === 'all')));
+  filterMenu(); search.focus();
+});
+const dishDialog = document.querySelector('#dish-dialog');
+document.querySelectorAll('.dish-details').forEach(button => button.addEventListener('click', () => {
+  const dish = button.closest('.dish');
+  const photo = dish.querySelector('img');
+  document.querySelector('#dialog-photo').src = photo.src;
+  document.querySelector('#dialog-photo').alt = photo.alt;
+  document.querySelector('#dialog-title').textContent = dish.querySelector('h3').textContent;
+  document.querySelector('#dialog-price').textContent = dish.querySelector('.dish-title>span').textContent;
+  document.querySelector('#dialog-category').textContent = dish.querySelector('.dish-category').textContent;
+  document.querySelector('#dialog-ingredients').textContent = dish.querySelector('.dish-copy>p').textContent;
+  dishDialog.showModal();
+  document.body.classList.add('dialog-open');
+}));
+dishDialog.querySelector('.dialog-close').addEventListener('click', () => dishDialog.close());
+dishDialog.addEventListener('close', () => document.body.classList.remove('dialog-open'));
+dishDialog.addEventListener('click', event => {
+  if (event.target !== dishDialog) return;
+  const r = dishDialog.getBoundingClientRect();
+  if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) dishDialog.close();
+});
+document.querySelector('#dialog-reserve').addEventListener('click', () => {dishDialog.close();document.querySelector('#reservas h2').focus({preventScroll:true});});
+document.querySelector('#reservas h2').tabIndex = -1;
+const mobileActions = document.querySelector('.mobile-actions');
+new IntersectionObserver(entries => {
+  mobileActions.classList.toggle('at-booking', entries.some(e => e.isIntersecting));
+}, {threshold:0}).observe(document.querySelector('#reservas'));
 // Keep the current section when switching languages; no personal form data is persisted.
 document.querySelectorAll('.language-switch a').forEach(link => link.addEventListener('click', () => {
   if (location.hash) link.href = link.getAttribute('href').split('#')[0] + location.hash;
@@ -83,3 +127,23 @@ document.querySelector('#copy-request').addEventListener('click', async () => {
   try { await navigator.clipboard.writeText(document.querySelector('#reservation-message').textContent);status.textContent=words('Mensagem copiada. Envia-a à equipa para pedir confirmação.','Message copied. Send it to the team to request confirmation.'); }
   catch { status.textContent=words('Seleciona e copia o texto acima.','Select and copy the message above.'); }
 });
+const progress = document.querySelector('.reading-progress');
+let scrollFrame = false;
+function updateProgress() {
+  const length = document.documentElement.scrollHeight - innerHeight;
+  progress.style.transform = `scaleX(${length > 0 ? scrollY / length : 0})`;
+  scrollFrame = false;
+}
+window.addEventListener('scroll', () => {
+  if (!scrollFrame) { scrollFrame = true; requestAnimationFrame(updateProgress); }
+}, {passive:true});
+updateProgress();
+if (!reducedMotion) {
+  const arrivalObserver = new IntersectionObserver(entries => {
+    for (const entry of entries) if (entry.isIntersecting) {
+      entry.target.classList.add('section-arrival');
+      arrivalObserver.unobserve(entry.target);
+    }
+  }, {threshold:0.12});
+  document.querySelectorAll('.story-heading,.menu-heading,.other-menu-title,.assembly-heading,.reservation-copy').forEach(el=>arrivalObserver.observe(el));
+}
