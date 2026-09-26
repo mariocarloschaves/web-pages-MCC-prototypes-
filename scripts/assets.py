@@ -70,3 +70,18 @@ for name, width, crf, gop in [('scene-01', 1920, 23, 8), ('scene-01-mobile', 960
     subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-y', '-i', str(output), '-frames:v', '1', str(WORLD/f'{name}-poster.png')], check=True)
     print('Prepared', name, flush=True)
 print('Prototype assets ready.', flush=True)
+
+# Reuse the four approved Seedance Mini outputs; no generation occurs during builds.
+import urllib.request as lead_urllib
+from pathlib import Path as LeadPath
+LEAD_VIDEOS = {
+  "van-lienden": "https://d8j0ntlcm91z4.cloudfront.net/user_3IDQioFnKEdiBTSpvyKkSdi5fp9/hf_20260926_064605_cc7d4d40-9bc6-4f64-b158-b688cc77ebc1.mp4",
+  "ventus": "https://d8j0ntlcm91z4.cloudfront.net/user_3IDQioFnKEdiBTSpvyKkSdi5fp9/hf_20260926_064605_10ea459e-09b6-4094-a658-f0fac013ca84.mp4",
+  "haagen": "https://d8j0ntlcm91z4.cloudfront.net/user_3IDQioFnKEdiBTSpvyKkSdi5fp9/hf_20260926_064605_a28a5a81-4455-4bae-b048-7cb66e94039e.mp4",
+  "boat-tours": "https://d8j0ntlcm91z4.cloudfront.net/user_3IDQioFnKEdiBTSpvyKkSdi5fp9/hf_20260926_064604_53f826db-602d-436e-9373-d0d7c1682de8.mp4"
+}
+for lead_slug, lead_url in LEAD_VIDEOS.items():
+    lead_target = LeadPath(__file__).resolve().parents[1] / 'public' / lead_slug / 'scene.mp4'
+    lead_target.parent.mkdir(parents=True, exist_ok=True)
+    if not lead_target.exists():
+        lead_urllib.urlretrieve(lead_url, lead_target)

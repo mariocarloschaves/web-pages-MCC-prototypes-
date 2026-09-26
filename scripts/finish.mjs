@@ -30,6 +30,10 @@ const html = `<!doctype html>
       <span>A barbershop website concept for Zwijndrecht.</span>
       <span class="open">Open prototype &rarr;</span>
     </a>
+    <a class="card" href="./van-lienden/"><strong>Van Lienden</strong><span>Personalised website concept with an interactive enquiry demonstration.</span><span class="open">Open prototype &rarr;</span></a>
+    <a class="card" href="./ventus/"><strong>Ventus Sailing</strong><span>Personalised website concept with an interactive enquiry demonstration.</span><span class="open">Open prototype &rarr;</span></a>
+    <a class="card" href="./haagen/"><strong>Haagen & Partners</strong><span>Personalised website concept with an interactive enquiry demonstration.</span><span class="open">Open prototype &rarr;</span></a>
+    <a class="card" href="./boat-tours/"><strong>Private Boat Tours Amsterdam</strong><span>Personalised website concept with an interactive enquiry demonstration.</span><span class="open">Open prototype &rarr;</span></a>
     <p class="note">Design concept with generated visuals. This is an MCC prototype, not the business's official website. The booking demonstration does not submit real appointments.</p>
     <footer>MCC &middot; Website prototypes</footer>
   </main>
