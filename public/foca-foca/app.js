@@ -14,14 +14,29 @@ menu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => 
 }));
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const film = document.querySelector('.hero-video');
-const filmToggle = document.querySelector('.film-toggle');
-let manuallyPaused = reducedMotion;
-function syncFilm(){filmToggle.textContent=film.paused?'Ver filme':'Pausar filme';filmToggle.setAttribute('aria-label',film.paused?'Reproduzir vídeo':'Pausar vídeo');}
-film.addEventListener('play',syncFilm);film.addEventListener('pause',syncFilm);
-if(reducedMotion){film.pause();}else{film.muted=true;film.play().catch(syncFilm);}
-filmToggle.addEventListener('click',()=>{manuallyPaused=!film.paused;if(film.paused){film.style.display='block';film.play().catch(syncFilm);}else{film.pause();}});
-document.addEventListener('visibilitychange',()=>{if(document.hidden){film.pause();}else if(!manuallyPaused){film.play().catch(syncFilm);}});
+document.querySelectorAll('[data-film]').forEach(container => {
+  const film = container.querySelector('video');
+  const toggle = container.querySelector('.film-toggle');
+  let manuallyPaused = reducedMotion;
+  function syncFilm() {
+    toggle.textContent = film.paused ? 'Ver filme' : 'Pausar filme';
+    toggle.setAttribute('aria-label', film.paused ? 'Reproduzir vídeo' : 'Pausar vídeo');
+  }
+  film.addEventListener('play', syncFilm);
+  film.addEventListener('pause', syncFilm);
+  film.muted = true;
+  if (reducedMotion) film.pause(); else film.play().catch(syncFilm);
+  toggle.addEventListener('click', () => {
+    manuallyPaused = !film.paused;
+    if (film.paused) { film.style.display = 'block'; film.play().catch(syncFilm); }
+    else film.pause();
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) film.pause();
+    else if (!manuallyPaused) film.play().catch(syncFilm);
+  });
+  syncFilm();
+});
 if (reducedMotion) {
   document.querySelectorAll('.reveal').forEach(element => element.classList.add('visible'));
 } else {
