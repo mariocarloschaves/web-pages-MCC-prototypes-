@@ -30,6 +30,7 @@ const html = `<!doctype html>
       <span>A barbershop website concept for Zwijndrecht.</span>
       <span class="open">Open prototype &rarr;</span>
     </a>
+    <a class="card" href="./foca-foca/"><strong>Foca Foca</strong><span>Editorial website concept for Setúbal's focacceria artigianale.</span><span class="open">Open prototype &rarr;</span></a>
     <a class="card" href="./van-lienden/"><strong>Van Lienden</strong><span>Personalised website concept with an interactive enquiry demonstration.</span><span class="open">Open prototype &rarr;</span></a>
     <a class="card" href="./ventus/"><strong>Ventus Sailing</strong><span>Personalised website concept with an interactive enquiry demonstration.</span><span class="open">Open prototype &rarr;</span></a>
     <a class="card" href="./haagen/"><strong>Haagen & Partners</strong><span>Personalised website concept with an interactive enquiry demonstration.</span><span class="open">Open prototype &rarr;</span></a>
