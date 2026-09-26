@@ -20,3 +20,19 @@ body.cinematic header{position:absolute;top:34px;left:0;right:0;z-index:5;max-wi
 @media(max-width:760px){body.cinematic header{top:51px;padding:22px 6%;gap:12px}.cinematic .concept{min-height:51px;font-size:9px}.cinematic .brand{font-size:17px;max-width:230px}.cinematic .brand small{font-size:8px;letter-spacing:1px}.cinematic .hero{min-height:calc(100svh - 51px);padding:150px 6% 150px}.cinematic .hero h1{font-size:clamp(44px,10.5vw,65px);letter-spacing:-1.8px}.cinematic .hero .intro{font-size:16px}.cinematic .hero .media{min-height:0}.cinematic .hero:after{background:linear-gradient(90deg,#06141ca8,#06141c45),linear-gradient(0deg,#06141c99,transparent)}.cinematic .hero .eyebrow{font-size:9px;letter-spacing:2px}.motion-toggle{bottom:65px;right:6%;font-size:11px}.scroll-cue{left:6%;font-size:8px;gap:12px}.cinematic .section{padding-top:70px;padding-bottom:65px}.detail-image{min-height:270px}.cinematic .film-copy{padding:30px}.cinematic .image-note{right:6%;font-size:8px}}
 @media(prefers-reduced-motion:no-preference){.cinematic .hero>div:first-child{animation:arrive 1s ease-out both}@keyframes arrive{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}}
 @media(prefers-reduced-motion:reduce){.cinematic .card{transition:none}}
+
+/* Compact, consistent vector controls with palette-specific finishes. */
+.arrow-icon{display:inline-block;vertical-align:middle;flex:0 0 auto;width:18px;height:18px}
+.cinematic{--button-bg:#edf0e7;--button-ink:#233e33;--button-radius:5px}
+.cinematic.sea{--button-bg:#edf3f1;--button-ink:#193d48;--button-radius:999px}
+.cinematic.sand{--button-bg:#eee5d5;--button-ink:#443e32;--button-radius:3px}
+.cinematic.night{--button-bg:#d8b77f;--button-ink:#152b37;--button-radius:999px}
+.cinematic .hero .primary,.cinematic form .primary{display:inline-flex;gap:18px;min-height:48px;padding:13px 21px;font:500 13px/1.4 'DM Sans',sans-serif;letter-spacing:.02em;border-radius:var(--button-radius);border:1px solid transparent;box-shadow:none;transition:background .2s,transform .2s}
+.cinematic .hero .primary{background:var(--button-bg);color:var(--button-ink)}
+.cinematic .hero .primary:hover{background:#fff;transform:translateY(-2px)}
+.cinematic header .pill{gap:13px;min-height:44px;padding:10px 17px;font-size:12px;border-radius:var(--button-radius)}
+.cinematic .primary .arrow-icon,.cinematic .pill .arrow-icon{width:17px;height:17px;transition:transform .2s}
+.cinematic .primary:hover .arrow-icon,.cinematic .pill:hover .arrow-icon{transform:translateX(3px)}
+.cinematic .card a{display:flex;justify-content:space-between;align-items:center;gap:16px}.concept .arrow-icon,.footer-note .arrow-icon{width:13px;height:13px;margin-left:3px}
+@media(max-width:760px){.cinematic .hero .primary{font-size:13px;max-width:100%;padding:13px 18px;gap:18px}.cinematic header .pill{padding:10px 13px;font-size:11px;gap:8px}.cinematic header .pill .arrow-icon{width:14px;height:14px}}
+@media(prefers-reduced-motion:reduce){.cinematic .primary,.cinematic .arrow-icon{transition:none}.cinematic .primary:hover,.cinematic .primary:hover .arrow-icon{transform:none}}
