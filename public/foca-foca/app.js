@@ -18,22 +18,13 @@ document.addEventListener('keydown', event => {
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 document.querySelectorAll('[data-film]').forEach(container => {
   const film = container.querySelector('video');
-  const toggle = container.querySelector('.film-toggle');
-  let manuallyPaused = reducedMotion;
-  function syncFilm() { toggle.textContent = film.paused ? words('Ver filme','Play film') : words('Pausar filme','Pause film'); }
-  film.addEventListener('play', syncFilm);
-  film.addEventListener('pause', syncFilm);
   film.muted = true;
-  if (reducedMotion) film.pause(); else film.play().catch(syncFilm);
-  toggle.addEventListener('click', () => {
-    manuallyPaused = !film.paused;
-    if (film.paused) { film.style.display = 'block'; film.play().catch(syncFilm); }
-    else film.pause();
-  });
+  if (reducedMotion) { film.autoplay = false; film.pause(); }
+  else { film.play().catch(() => {}); }
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) film.pause(); else if (!manuallyPaused) film.play().catch(syncFilm);
+    if (document.hidden || reducedMotion) film.pause();
+    else film.play().catch(() => {});
   });
-  syncFilm();
 });
 const filters = document.querySelectorAll('[data-filter]');
 filters.forEach(button => button.addEventListener('click', () => {
