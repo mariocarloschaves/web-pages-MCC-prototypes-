@@ -26,9 +26,15 @@ archive = b''.join(pieces)
 if hashlib.sha256(archive).hexdigest() != manifest['sha256']:
     raise ValueError('Media archive failed integrity verification')
 DEST.mkdir(parents=True, exist_ok=True)
+# The lightweight hero loop is tracked separately so it can be updated independently.
+(DEST / 'hero-loop.mp4').unlink(missing_ok=True)
+restored = 0
 with zipfile.ZipFile(io.BytesIO(archive)) as z:
     for name in z.namelist():
         if PurePosixPath(name).name != name or name in ('.', '..'):
             raise ValueError('Unexpected media entry path')
+        if name == 'hero-loop.mp4':
+            continue
         (DEST / name).write_bytes(z.read(name))
-    print(f'Care4Gardens: verified and restored {len(z.namelist())} media assets.')
+        restored += 1
+    print(f'Care4Gardens: verified and restored {restored} media assets.')
