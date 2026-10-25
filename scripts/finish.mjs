@@ -25,6 +25,7 @@ const html = `<!doctype html>
     <div class="eyebrow">MCC / Selected Concepts</div>
     <h1>A first look at<br>what comes next.</h1>
     <p>Website prototypes created by MCC. Explore the design, motion, and experience.</p>
+    <a class="card" href="./care4gardens/"><strong>Care4Gardens</strong><span>An interactive outdoor showroom with cinematic transformations, a complete product catalogue, and a guided garden planner.</span><span class="open">Open prototype &rarr;</span></a>
     <a class="card" href="./tiptop/">
       <strong>Tip.TopBarbershop</strong>
       <span>A barbershop website concept for Zwijndrecht.</span>

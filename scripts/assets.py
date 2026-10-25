@@ -85,3 +85,7 @@ for lead_slug, lead_url in LEAD_VIDEOS.items():
     lead_target.parent.mkdir(parents=True, exist_ok=True)
     if not lead_target.exists():
         lead_urllib.urlretrieve(lead_url, lead_target)
+
+# Restore the locally bundled Care4Gardens images, video and fonts.
+import sys
+subprocess.run([sys.executable, str(ROOT / 'scripts' / 'care4gardens-assets.py')], check=True)
