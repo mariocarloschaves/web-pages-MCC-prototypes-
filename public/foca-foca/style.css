@@ -37,5 +37,5 @@ html{scroll-padding-top:110px}.site-header{position:sticky;top:0;box-shadow:0 1p
 .assembly-frame{aspect-ratio:512/910;width:min(100%,360px);margin-inline:auto;border-radius:18px}
 .assembly-video{object-fit:contain}
 .assembly-caption{text-align:center;line-height:1.6}
-.assembly-frame .film-toggle{right:16px;bottom:16px;background:var(--paper);color:var(--ink);border:1px solid var(--line);box-shadow:0 3px 12px #0003;min-height:44px}
+.assembly-frame .film-toggle{border-radius:999px;right:16px;bottom:16px;background:var(--paper);color:var(--ink);border:1px solid var(--line);box-shadow:0 3px 12px #0003;min-height:44px}
 @media(max-width:650px){#dialog-photo[data-photo="client"]{aspect-ratio:auto;height:auto;max-height:52svh}}

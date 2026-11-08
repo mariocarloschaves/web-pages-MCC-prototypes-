@@ -8,14 +8,21 @@ on:
       - 'scripts/qa/foca-foca.py'
       - '.github/workflows/foca-qa.yml'
   workflow_dispatch:
+  workflow_run:
+    workflows: [Deploy MCC Prototypes]
+    types: [completed]
+    branches: [main]
 permissions:
   contents: read
 jobs:
   browser:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -30,8 +37,14 @@ jobs:
           python scripts/foca-bilingual.py
           git diff --exit-code -- public/foca-foca/index.html public/foca-foca/en.html
       - name: Test both languages and responsive media
+        env:
+          EVENT_NAME: ${{ github.event_name }}
         run: |
-          python -m http.server 4173 --directory public > /tmp/foca-server.log 2>&1 &
+          if [ "$EVENT_NAME" = "workflow_run" ]; then
+            export BASE_URL=https://mariocarloschaves.github.io/web-pages-MCC-prototypes-/foca-foca/
+          else
+            python -m http.server 4173 --directory public > /tmp/foca-server.log 2>&1 &
+          fi
           python scripts/qa/foca-foca.py
       - name: Save screenshots and results
         if: always()
