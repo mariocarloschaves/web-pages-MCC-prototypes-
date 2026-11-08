@@ -122,6 +122,16 @@ document.querySelectorAll('.dish-details').forEach(button => button.addEventList
   document.body.classList.add('dialog-open');
 }));
 dishDialog.querySelector('.dialog-close').addEventListener('click', () => dishDialog.close());
+dishDialog.addEventListener('keydown', event => {
+  if (event.key !== 'Tab') return;
+  const first = dishDialog.querySelector('.dialog-close');
+  const last = dishDialog.querySelector('#dialog-reserve');
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault(); last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault(); first.focus();
+  }
+});
 dishDialog.addEventListener('close', () => document.body.classList.remove('dialog-open'));
 dishDialog.addEventListener('click', event => {
   if (event.target !== dishDialog) return;
