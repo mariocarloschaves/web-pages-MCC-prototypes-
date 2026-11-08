@@ -1,0 +1,41 @@
+name: Foca Foca preview QA
+on:
+  push:
+    branches: [main, 'foca-foca/**']
+    paths:
+      - 'public/foca-foca/**'
+      - 'scripts/foca-bilingual.py'
+      - 'scripts/qa/foca-foca.py'
+      - '.github/workflows/foca-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install QA tools
+        run: |
+          python -m pip install Pillow==11.3.0 playwright==1.62.0
+          python -m playwright install --with-deps chromium
+      - name: Verify generator is reproducible
+        run: |
+          python scripts/foca-bilingual.py
+          git diff --exit-code -- public/foca-foca/index.html public/foca-foca/en.html
+          python scripts/foca-bilingual.py
+          git diff --exit-code -- public/foca-foca/index.html public/foca-foca/en.html
+      - name: Test both languages and responsive media
+        run: |
+          python -m http.server 4173 --directory public > /tmp/foca-server.log 2>&1 &
+          python scripts/qa/foca-foca.py
+      - name: Save screenshots and results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: foca-foca-qa
+          path: qa/foca-foca/

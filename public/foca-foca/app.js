@@ -26,6 +26,54 @@ document.querySelectorAll('[data-film]').forEach(container => {
     else film.play().catch(() => {});
   });
 });
+// The supplied silent clip loads only near the viewport. An explicit pause wins
+// over both visibility changes and autoplay; reduced motion needs a user start.
+const assembly = document.querySelector('#assembly-video');
+const assemblyToggle = document.querySelector('#assembly-toggle');
+const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+let assemblyVisible = false;
+let assemblyPausedByUser = false;
+let assemblyStartedByUser = false;
+assembly.controls = false;
+assemblyToggle.hidden = false;
+function updateAssemblyButton() {
+  assemblyToggle.textContent = assembly.paused
+    ? words('Reproduzir vídeo', 'Play video') : words('Pausar vídeo', 'Pause video');
+}
+function syncAssembly() {
+  if (!assemblyVisible || document.hidden || assemblyPausedByUser ||
+      (motionPreference.matches && !assemblyStartedByUser)) {
+    assembly.pause();
+    return;
+  }
+  assembly.play().catch(() => {
+    updateAssemblyButton();
+    if (assemblyStartedByUser) document.querySelector('#assembly-status').textContent =
+      words('Não foi possível reproduzir o vídeo. Tenta novamente.', 'Unable to play the video. Please try again.');
+  });
+}
+assemblyToggle.addEventListener('click', () => {
+  document.querySelector('#assembly-status').textContent = '';
+  if (assembly.paused) {
+    assemblyPausedByUser = false;
+    assemblyStartedByUser = true;
+    syncAssembly();
+  } else {
+    assemblyPausedByUser = true;
+    assembly.pause();
+  }
+});
+assembly.addEventListener('play', updateAssemblyButton);
+assembly.addEventListener('pause', updateAssemblyButton);
+new IntersectionObserver(entries => {
+  assemblyVisible = entries[0].isIntersecting;
+  syncAssembly();
+}, {threshold: 0.1}).observe(assembly);
+document.addEventListener('visibilitychange', syncAssembly);
+motionPreference.addEventListener('change', () => {
+  if (motionPreference.matches) assemblyStartedByUser = false;
+  syncAssembly();
+});
 const filters = document.querySelectorAll('[data-filter]');
 const search = document.querySelector('#menu-search');
 let category = 'all';
@@ -60,6 +108,12 @@ document.querySelectorAll('.dish-details').forEach(button => button.addEventList
   const photo = dish.querySelector('img');
   document.querySelector('#dialog-photo').src = photo.src;
   document.querySelector('#dialog-photo').alt = photo.alt;
+  document.querySelector('#dialog-photo').setAttribute('width', photo.getAttribute('width'));
+  document.querySelector('#dialog-photo').setAttribute('height', photo.getAttribute('height'));
+  document.querySelector('#dialog-photo').dataset.photo = photo.dataset.photo;
+  document.querySelector('#dialog-image-note').textContent = photo.dataset.photo === 'client'
+    ? words('Fotografia fornecida pela equipa.', 'Photograph supplied by the team.')
+    : words('Imagem ilustrativa. A apresentação pode variar.', 'Illustrative image. Presentation may vary.');
   document.querySelector('#dialog-title').textContent = dish.querySelector('h3').textContent;
   document.querySelector('#dialog-price').textContent = dish.querySelector('.dish-title>span').textContent;
   document.querySelector('#dialog-category').textContent = dish.querySelector('.dish-category').textContent;
